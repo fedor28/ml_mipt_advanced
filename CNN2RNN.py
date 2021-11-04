@@ -31,6 +31,7 @@ class Encoder(nn.Module):
         
         self.dropout = nn.Dropout(p=dropout)# <YOUR CODE HERE>
         self.activation = activation
+        self.pooling = nn.AdaptiveMaxPool1d(output_size = 1)
     def forward(self, src):
         
         #src = [src sent len, batch size]
@@ -49,6 +50,10 @@ class Encoder(nn.Module):
         print('hidden', hidden.shape)
 
         out = self.activation(hidden)
+        out = self.pooling(out)
+        print('pooling', out.shape)
+        out = out.permute(2, 0, 1)
+        print('after permute', out.shape)
 
         print('\n')
         #output, (hidden, cell) = self.rnn(embedded)
@@ -186,3 +191,4 @@ class Seq2Seq(nn.Module):
             input = (trg[t] if teacher_force else top1)
         
         return outputs
+
