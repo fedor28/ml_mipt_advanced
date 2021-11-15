@@ -35,27 +35,27 @@ class Encoder(nn.Module):
     def forward(self, src):
         
         #src = [src sent len, batch size]
-        print('src shape', src.shape)
+        # print('src shape', src.shape)
         # Compute an embedding from the src data and apply dropout to it
         embedded = self.embedding(src)# <YOUR CODE HERE>
-        print('embedded shape', embedded.shape)
+        # print('embedded shape', embedded.shape)
 
         embedded = self.dropout(embedded)
-        print('after drop', embedded.shape)
+        # print('after drop', embedded.shape)
 
         embedded = embedded.permute(1, 2, 0)
-        print('after permute', embedded.shape)
+        # print('after permute', embedded.shape)
 
         hidden = self.cnn(embedded)
-        print('hidden', hidden.shape)
+        # print('hidden', hidden.shape)
 
         out = self.activation(hidden)
         out = self.pooling(out)
-        print('pooling', out.shape)
+        # print('pooling', out.shape)
         out = out.permute(2, 0, 1)
-        print('after permute', out.shape)
+        # print('after permute', out.shape)
 
-        print('\n')
+        # print('\n')
         #output, (hidden, cell) = self.rnn(embedded)
         #embedded = [src sent len, batch size, emb dim]
         
