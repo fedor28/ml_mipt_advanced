@@ -78,7 +78,6 @@ class TfIdf(TransformerMixin):
         """
         self.k = k
         self.normalize = normalize
-
         # self.idf[term] = log(total # of documents / # of documents with term in it)
         self.idf = OrderedDict()
 
@@ -86,9 +85,18 @@ class TfIdf(TransformerMixin):
         """
         :param X: array of texts to be trained on
         """
-        raise NotImplementedError
-
+        # raise NotImplementedError
+        counter = Counter(' '.join(X).split())
+        vocab = sorted(counter, key = lambda x:counter[x], reverse = True)[:self.k]
         # fit method must always return self
+        print('len vocabulary:', len(vocab))
+
+        for token in vocab:
+          num_texts_with_token = 0
+          for text in X:
+            if token in text:
+              num_texts_with_token += 1
+          self.idf[token] = np.log(len(X)/ num_texts_with_token)
         return self
 
     def _text_to_tf_idf(self, text: str) -> np.ndarray:
@@ -99,8 +107,15 @@ class TfIdf(TransformerMixin):
         :return tf_idf: tf-idf features
         """
 
-        result = None
-        raise NotImplementedError
+        #result = None
+        #raise NotImplementedError
+        result = []
+        counter = Counter(text.split())
+        for token in self.idf:
+
+          result.append((counter[token]/len(text.split())) * self.idf[token])
+        #if self.normalize:
+
         return np.array(result, "float32")
 
     def transform(self, X: np.ndarray, y=None) -> np.ndarray:
